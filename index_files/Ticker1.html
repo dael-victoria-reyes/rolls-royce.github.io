@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<!-- saved from url=(0115)http://ir.tools.investis.com/Clients/(S(mo2mdd441cbuon4rt4bcugal))/uk/rolls-royce/Ticker/Ticker1.aspx?culture=en-GB -->
+<html xmlns="http://www.w3.org/1999/xhtml"><div class="oneNoteWebClipperIsInstalledOnThisBrowser" style="display: none;"></div><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><!-- PSPCEUC1WEB01--><title>
+	Share Price Ticker
+</title><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <script src="./jquery-1.11.2.min.js.download"></script>
+    <style type="text/css">
+
+		html{-webkit-text-size-adjust:none;/*Prevent font scaling in landscape*/}
+		body{background-color:transparent;font-family:Arial,Helvetica,sans-serif;width:100%;color:#768d99;margin:0;padding:0;}
+		.spticker{width:100%;}
+		.text{   color: #fff;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size: 21px;
+    padding-bottom: 3px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 6px;}
+		 .positive{color:green;}
+        .negative{color:red;}
+	.left{padding:0 10px 0px 10px}
+		.price{font-size:18px;margin:0;font-family:Arial,Helvetica,sans-serif;}
+		.change{font-size:14px;font-family:Arial,Helvetica,sans-serif;}
+        .spticker > div{}		
+   @media all and (max-width: 265px){
+		.price{font-size: 15.6px;}
+.chngecolor{padding-top:3px; font-size: 13px;}
+.button{margin-top:0;}
+}
+    </style>
+
+		<meta http-equiv="imagetoolbar" content="no">
+</head>
+<body class="no-touch">
+    <form name="form1" method="post" action="http://ir.tools.investis.com/Clients/(S(mo2mdd441cbuon4rt4bcugal))/uk/rolls-royce/Ticker/Ticker1.aspx?culture=en-GB" id="form1">
+<div>
+<input type="hidden" name="__EVENTTARGET" id="__EVENTTARGET" value="">
+<input type="hidden" name="__EVENTARGUMENT" id="__EVENTARGUMENT" value="">
+<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="/wEPDwUKMTM2NDM1NjIyMmRkx6rVbSD7T6YV4+hyQX/XzNP3lXo=">
+</div>
+
+<script type="text/javascript">
+//<![CDATA[
+var theForm = document.forms['form1'];
+if (!theForm) {
+    theForm = document.form1;
+}
+function __doPostBack(eventTarget, eventArgument) {
+    if (!theForm.onsubmit || (theForm.onsubmit() != false)) {
+        theForm.__EVENTTARGET.value = eventTarget;
+        theForm.__EVENTARGUMENT.value = eventArgument;
+        theForm.submit();
+    }
+}
+//]]>
+</script>
+
+
+<script src="./WebResource.axd" type="text/javascript"></script>
+
+
+<script src="./ScriptResource.axd" type="text/javascript"></script>
+<script src="./ScriptResource(1).axd" type="text/javascript"></script>
+<div>
+
+	<input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="158792C0">
+</div>
+        <script type="text/javascript">
+//<![CDATA[
+Sys.WebForms.PageRequestManager._initialize('sm', 'form1', [], [], [], 90, '');
+//]]>
+</script>
+
+        
+    <div class="spticker">
+         <div class="left">
+            <div class="price">
+                <span id="price" class="lastLabel">724.50</span>&nbsp;<span id="Instrument1" class="lastLabel">GBX</span>                          
+                <span><img id="forimg" src="./down(1).png"></span>
+				<span class="change chngecolor">
+                    <span id="SnapshotDifference1"><span class="negative">-2.00</span></span>
+                    </span>
+			</div>
+        </div>       
+     </div>
+
+    <input type="hidden" class="Hidden" id="txtQFlifeFrameworkState" name="txtQFlifeFrameworkState" value=""></form>
+
+<script type="text/javascript">
+    var x = document.getElementsByTagName("span");
+    for (var i = 0; i < x.length; i++) {
+        if (x[i].className == 'negative') {
+            document.getElementById('forimg').setAttribute('src', 'Images/down.png');
+            break;
+        }
+        if (x[i].className == 'positive') {
+            document.getElementById('forimg').setAttribute('src', 'Images/up.png');
+            break;
+        }
+        else {
+            document.getElementById('forimg').setAttribute('src', 'Images/zero.png');
+        }
+    }
+</script>
+
+
+
+
+
+
+
+</body></html>

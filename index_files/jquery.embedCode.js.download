@@ -1,0 +1,2026 @@
+var inv_isVideoFullscreen = false;
+var inv_CssOrJsArray = new Array();
+var inv_CssOrJsCounter=0;
+
+(function ($j)
+{
+	function playerConstruct(_self, params)
+	{
+		
+///////////////////////////////////////////////////////////Player Configuration///////////////////////////////////////////////////////////	
+		var inv_playerSpecificClass=new Array();
+		inv_playerSpecificClass.push("inv_videoMainContainer");
+		inv_playerSpecificClass.push("inv_videoInformation");
+		inv_playerSpecificClass.push("inv_videoInformation_Title");
+		inv_playerSpecificClass.push("inv_videoInformation_Description");
+		inv_playerSpecificClass.push("inv_videoplaylist");
+		inv_playerSpecificClass.push("inv_videoListThumbnail");
+		inv_playerSpecificClass.push("inv_videoGallery");
+		inv_playerSpecificClass.push("inv_videoplaylistControlsContainer");
+		inv_playerSpecificClass.push("inv_prevBtn");
+		inv_playerSpecificClass.push("inv_nextBtn");
+		inv_playerSpecificClass.push("inv_pagesBtns");
+		inv_playerSpecificClass.push("inv_playheadWellContainer");
+		inv_playerSpecificClass.push("inv_pagesBtn");
+		inv_playerSpecificClass.push("inv_videoListControls");
+		inv_playerSpecificClass.push("inv_videoCuePoint");
+		inv_playerSpecificClass.push("inv_videoListTitle");
+		inv_playerSpecificClass.push("inv_videoListDescription");
+		inv_playerSpecificClass.push("inv_videoList");
+		inv_playerSpecificClass.push("inv_videoListConatiner");
+		inv_playerSpecificClass.push("inv_relatedInformation");
+		
+		var inv_layoutChange=new Array();
+		inv_layoutChange.push({"playerType":"singleplayer","class":"inv_videoCuePoint","to":"inv_videoMainContainer"});
+		inv_layoutChange.push({"playerType":"singleplayer","class":"inv_shareControls","to":"inv_videoMainContainer"});
+		inv_layoutChange.push({"playerType":"singleplayer","class":"inv_relatedInformation","to":"inv_videoMainContainer"});
+		inv_layoutChange.push({"playerType":"singleplayer","class":"inv_soundControl","after":"inv_soundOnOffBtn"});
+		inv_layoutChange.push({"playerType":"singleplayer","class":"inv_videoInformation","before":"inv_videoMainContainer"});
+		
+		inv_layoutChange.push({"playerType":"galleryplayer","class":"inv_videoGallery","to":"inv_videoControls"}); 
+		inv_layoutChange.push({"playerType":"galleryplayer","class":"inv_videoCuePoint","to":"inv_videoMainContainer"});
+		inv_layoutChange.push({"playerType":"galleryplayer","class":"inv_shareControls","to":"inv_shareBtn"});
+		//inv_layoutChange.push({"playerType":"galleryplayer","class":"inv_videoInformation","after":"inv_videoMainContainer"});
+		inv_layoutChange.push({"playerType":"galleryplayer","class":"inv_playheadWellContainer","to":"inv_videoMainContainer"});
+		inv_layoutChange.push({"playerType":"galleryplayer","class":"inv_relatedInformation","to":"inv_videoMainContainer"});
+		inv_layoutChange.push({"playerType":"galleryplayer","class":"inv_soundControl","after":"inv_soundOnOffBtn"});
+		inv_layoutChange.push({"playerType":"galleryplayer","class":"inv_controlbigtext","to":"inv_videoControls"});
+		
+		// Left side controls
+		inv_layoutChange.push({"playerType":"galleryplayer","class":"inv_nowplayingContainer","to":"inv_videoControls"});
+		inv_layoutChange.push({"playerType":"galleryplayer","class":"inv_nowplayingLabel","to":"inv_nowplayingContainer"});
+		inv_layoutChange.push({"playerType":"galleryplayer","class":"inv_videoInformation","to":"inv_nowplayingContainer"});
+		
+		// Right side controls
+		inv_layoutChange.push({"playerType":"galleryplayer","class":"inv_videoListBtnContainer","to":"inv_videoControls"});
+		inv_layoutChange.push({"playerType":"galleryplayer","class":"videoListBtn","to":"inv_videoListBtnContainer"});
+		inv_layoutChange.push({"playerType":"galleryplayer","class":"videoListLabel","to":"inv_videoListBtnContainer"});
+		inv_layoutChange.push({"playerType":"galleryplayer","class":"inv_shareBtn","to":"inv_videoListBtnContainer"});
+		
+		inv_layoutChange.push({"playerType":"galleryplayer","class":"now_next_cont","to":"inv_videoplaylist"});
+		inv_layoutChange.push({"playerType":"galleryplayer","class":"galleryTitle","to":"now_next_cont"});
+		inv_layoutChange.push({"playerType":"galleryplayer","class":"playnowcont","to":"now_next_cont"});
+		inv_layoutChange.push({"playerType":"galleryplayer","class":"playnextcont","to":"now_next_cont"});
+		inv_layoutChange.push({"playerType":"galleryplayer","class":"morevideoscont","to":"inv_videoplaylist"});
+		inv_layoutChange.push({"playerType":"galleryplayer","class":"inv_overlaythumb","to":"playnowcont"});
+		
+		inv_layoutChange.push({"playerType":"galleryplayer","class":"nowplayLabel","to":"playnowcont"});
+		inv_layoutChange.push({"playerType":"galleryplayer","class":"nextplayLabel","to":"playnextcont"});
+		inv_layoutChange.push({"playerType":"galleryplayer","class":"morevideosLabel","to":"morevideoscont"});
+		
+		inv_layoutChange.push({"playerType":"galleryplayer","class":"bx-slider-holder","to":"morevideoscont"});
+		
+		// Share Controls
+		
+		//inv_layoutChange.push({"playerType":"galleryplayer","class":"inv_vineBtn","to":"inv_shareControls"});
+		inv_layoutChange.push({"playerType":"galleryplayer","class":"inv_linkedinBtn","to":"inv_shareControls"});
+		inv_layoutChange.push({"playerType":"galleryplayer","class":"inv_twitterBtn","to":"inv_shareControls"});
+		//inv_layoutChange.push({"playerType":"galleryplayer","class":"inv_youtubeBtn","to":"inv_shareControls"});
+		inv_layoutChange.push({"playerType":"galleryplayer","class":"inv_facebookBtn","to":"inv_shareControls"});
+		
+		var inv_enableCategorizedGallery=false;
+		var inv_enableEffects=true;
+		var inv_subMenuHover=false;
+		var inv_showPageNumber=false;
+		//////////////////////////////////////////////////////////Sound	
+		var inv_soundBars=5;	
+		var inv_soundBarsDefaultselection=2;
+		
+		///////////////////////////////////////////////////////////Email Settings
+		var inv_emailSubject='Video: @shortDescription';
+		var inv_emailBody="I thought you might be interested in this video: @shortDescription%0A%0AYou can view it at: @pageurl%0A";////////////////%0A for new line		
+		///////////////////////////////////////////////////////////Share Settings
+		var inv_videoShareTitle='Hear from our experts';
+		///////////////////////////////////////////////////////////Google Analytics Settings
+		var inv_gaAccount="UA-22832915-1";//UA-39226021-1 is default test account//UA-41795468-1 QA Account // UA-22832915-1 rollsroyce.com
+		var inv_gaType;
+		///////////////////////////////////////////////////////////Play Video in Sequence
+		var inv_gallery_playInSequence=false;
+		var inv_minigallery_playInSequence=false;
+		var inv_repositionToStart=true;
+		var inv_isResponsive=true;
+		
+		var inv_gallery_structure=new Array();
+		inv_gallery_structure.push({device:"desktop",rows:"1",columns:"3"});
+		inv_gallery_structure.push({device:"tablets",rows:"2",columns:"4"});
+		inv_gallery_structure.push({device:"mobilelarge",rows:"4",columns:"2"});
+		inv_gallery_structure.push({device:"mobilesmall",rows:"~",columns:"1"});
+		
+		var inv_minigallery_structure=new Array();
+		inv_minigallery_structure.push({device:"desktop",rows:"4",columns:"1"});
+		inv_minigallery_structure.push({device:"tablets",rows:"4",columns:"1"});
+		inv_minigallery_structure.push({device:"mobilelarge",rows:"4",columns:"1"});
+		inv_minigallery_structure.push({device:"mobilesmall",rows:"~",columns:"1"});
+		
+		var inv_relatedData_structure=new Array();
+		inv_relatedData_structure.push({device:"desktop",rows:"1",columns:"2"});
+		inv_relatedData_structure.push({device:"tablets",rows:"1",columns:"2"});
+		inv_relatedData_structure.push({device:"mobilelarge",rows:"1",columns:"2"});
+		inv_relatedData_structure.push({device:"mobilesmall",rows:"1",columns:"2"});
+		
+		var inv_shareWithCuePoint=false;
+		var inv_DBO_Detail;
+		var videoCollection;
+		var currentMediaIndex;
+		var inv_mouseOutBool;
+		var inv_mouseOutTimeout=3000;
+		var bxSlider1;
+		
+///////////////////////////////////////////////////////////Plugin Parameters///////////////////////////////////////////////////////////
+		var op = $j.extend({}, 
+		{
+			gaCode:params.gaCode,
+			gaType:params.gaType,
+			/*isCareersSite:params.isCareersSite,*/ /*Urvi - 06/06/2016 removed rollsroyce careers site code*/
+			playerType:params.playerType,
+			integrationMethod:params.integrationMethod,
+			videoId:params.videoId,
+			videoTags:params.videoTags,
+			xmlPath:params.xmlPath,
+			overlayPlay:params.overlayPlay,
+			autoPlay:params.autoPlay,
+			cuePointXMLPath:params.cuePointXMLPath,
+			transcriptFilePath:params.transcriptFilePath,
+			relatedData:params.relatedData,
+			isBanner:params.isBanner,
+			showInfo:params.showInfo,
+			rrcareers:params.rrcareers,
+			sectionText:params.sectionText,
+			loop:params.loop,
+			isLoop:params.isLoop, // Banner player with loop - vine
+			
+			playerScreenModeChanged:params.playerScreenModeChanged
+		}, params);
+		
+		var inv_playerContainer=_self;  
+		var initGA=function()
+		{
+			try
+			{
+				// centralized tracker 	
+				switch(inv_gaType)
+				{
+					case "traditional":
+						inv_analytics = _gaq || [];		
+						inv_analytics.push(['b._setAccount', 'UA-39226021-1']);
+						break;
+					case "universal":
+						ga('create', 'UA-39226021-1', 'auto',{'name':'newTracker'});
+						break;
+					case "tagmanager":
+						inv_analytics = _gaq || [];		
+						inv_analytics.push(['b._setAccount', 'UA-39226021-1']);
+						break;
+					case undefined:
+						inv_analytics = _gaq || [];		
+						inv_analytics.push(['b._setAccount', 'UA-39226021-1']);
+						break;	
+				} 			
+				if(inv_gaAccount!=undefined)  
+				{
+					// client specific tracker
+					switch(inv_gaType){
+						case "traditional": 
+							inv_analytics.push(['inv._setAccount', inv_gaAccount]);
+							break;
+						case "universal":
+							ga('create', inv_gaAccount, 'auto');	
+							break;
+						case "tagmanager":
+							inv_analytics.push(['inv._setAccount', inv_gaAccount]);
+							break;
+						case undefined:	
+							inv_analytics.push(['inv._setAccount', inv_gaAccount]);
+							break;
+					}
+				}
+			}
+			catch(ee)
+			{
+				
+			}	
+		}
+		
+		
+		/****************************************************************** Banner Player Start ******************************************************************/	
+		if(op.isBanner==true)
+		{		
+			inv_soundBarsDefaultselection=5;
+		}
+		/****************************************************************** Banner Player End ******************************************************************/	
+		
+		
+		
+		/****************************************************************** Transcript Code Start ******************************************************************/	
+		var transcriptPath;
+		if(op.transcriptFilePath!=undefined)
+		{
+			transcriptPath = op.transcriptFilePath;
+			if(window.location.host.indexOf("rolls-royce") == -1)
+			{
+				transcriptPath = "data/transcript.html";
+			}
+		}
+		/****************************************************************** Transcript Code End ******************************************************************/	
+		
+		
+		
+		/****************************************************************** RR Careers Start ******************************************************************/
+		if(op.rrcareers)
+		{
+			inv_layoutChange.push({"playerType":"singleplayer","class":"inv_playheadWellContainer","before":"inv_videoControls"});
+			inv_subMenuHover = false;
+			inv_enableEffects=false;
+			/*try
+			{
+				var vars = {};
+				var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+					vars[key] = value;
+				});
+				
+				var careers = vars["testcareers"];
+				if(careers!=undefined && careers.indexOf("true")!=-1)
+				{
+					inv_gaAccount="UA-123-1";
+					inv_playerContainer.attr('testcareers','true');	
+				}
+			}
+			catch(e){}*/
+				
+			
+			
+			// sharing and GA Tracking Code////////////////////////////////////////////////////////////////////////////
+			var v_appId='1706038252974554';// lng page code
+			
+			
+			/*Urvi - 06/06/2016 removed rollsroyce careers site code ---------------- start*/
+			/*if(op.isCareersSite!=undefined && op.isCareersSite)
+			{
+				inv_playerContainer.attr('iscareerssite','true');	
+				inv_gaAccount="UA-123-1";
+				inv_playerContainer.attr('testcareers','true');	
+				
+				inv_enableEffects=false;
+				 
+				if(op.playerType=='singleplayer')
+				{
+					if(!op.isBanner)
+					{
+						inv_playerContainer.attr('isNotBanner','true');		
+					}
+				}
+			}
+			else
+				inv_playerContainer.attr('iscareerssite','false');	
+				
+			if(inv_playerContainer.attr('iscareerssite')=='true')
+			{
+				inv_playerContainer.addClass('inv_playerContainer');
+				
+				v_appId='1289489351077913';// careers site code
+				
+				//if(inv_playerContainer.attr('testcareers')=='true')
+				{
+					inv_layoutChange.push({"playerType":"singleplayer","class":"inv_playheadWellContainer","before":"inv_startTime"});
+					if(inv_playerContainer.attr('testcareers')=='true')
+						inv_layoutChange.push({"playerType":"galleryplayer","class":"inv_playheadWellContainer","before":"inv_startTime"});
+					//inv_subMenuHover = true; //28-04-2015
+					inv_soundBars=11;
+					inv_soundBarsDefaultselection=6;
+				}
+			}*/
+			/*Urvi - 06/06/2016 removed rollsroyce careers site code ---------------- end*/
+			
+			window.fbAsyncInit = function() {
+			FB.init({
+			  appId      : v_appId,
+			  xfbml      : true,
+			  version    : 'v2.5'
+			});
+		  };
+		
+		  (function(d, s, id){
+			 var js, fjs = d.getElementsByTagName(s)[0];
+			 if (d.getElementById(id)) {return;}
+			 js = d.createElement(s); js.id = id;
+			 js.src = "//connect.facebook.net/en_US/sdk.js";
+			 fjs.parentNode.insertBefore(js, fjs);
+		   }(document, 'script', 'facebook-jssdk'));
+		   
+		   initGA();
+		}
+		/****************************************************************** RR Careers End ******************************************************************/
+		
+		
+		
+		/*var inv_CssOrJsArray;
+		var inv_CssOrJsCounter;*/
+		var inv_checkAllAvailable;
+		var preinit=function()
+		{
+			/*Urvi - 06/06/2016 removed rollsroyce careers site code ---------------- start*/
+			/*if(inv_playerContainer.attr('iscareerssite')=='true')
+			{
+				if(op.gaCode!=undefined)
+					inv_gaAccount=op.gaCode;
+				if(op.gaType!=undefined)
+					inv_gaType=op.gaType;
+			}*/
+			/*Urvi - 06/06/2016 removed rollsroyce careers site code ---------------- end*/
+			
+			inv_checkAllAvailable=setInterval(function(){checkAllAvailable()},250);	
+			if(inv_CssOrJsArray.length==0)
+			{
+				inv_CssOrJsArray=new Array();
+				inv_CssOrJsArray.push("https://viz.tools.investis.com/video/videoplayer-v1.0.2_Responsive/stylesheets/video-js.css");
+				
+				/****************************************************************** RR Careers Start ******************************************************************/
+				if(op.rrcareers)
+				{
+					inv_CssOrJsArray.push("https://viz.tools.investis.com/rollsroyce/html5player/live/careers-merged/stylesheets/jquery.bxslider.css");
+					/*Urvi - 06/06/2016 removed rollsroyce careers site code ---------------- start*/
+					/*if(inv_playerContainer.attr('testcareers')=='true')
+						inv_CssOrJsArray.push("https://viz.tools.investis.com/rollsroyce/html5player/live/careers-merged/stylesheets/careers-video-style-withgallery.css");	
+					else*/
+					/*Urvi - 06/06/2016 removed rollsroyce careers site code ---------------- end*/
+					inv_CssOrJsArray.push("https://viz.tools.investis.com/rollsroyce/html5player/live/lngenabledlist/stylesheets/careers-video-style.css");	
+				}
+				else
+				{
+					inv_CssOrJsArray.push("https://viz.tools.investis.com/rollsroyce/html5player/live/careers-merged/stylesheets/video-style.css");	
+				}
+				if(window.location.host.indexOf("rolls-royce") == -1)
+				{
+					inv_CssOrJsArray.push("https://viz.tools.investis.com/rollsroyce/html5player/live/careers-merged/javascripts/jquery.bxslider.js");	
+				}
+				/****************************************************************** RR Careers End ******************************************************************/
+				
+				/*Urvi - 06/06/2016 removed rollsroyce careers site code ---------------- start*/		
+				/*if(inv_playerContainer.attr('testcareers')=='true')	
+					inv_CssOrJsArray.push("https://viz.tools.investis.com/rollsroyce/html5player/live/careers-merged/javascripts/matchMedia.js");			*/
+				/*Urvi - 06/06/2016 removed rollsroyce careers site code ---------------- end*/
+						
+				inv_CssOrJsArray.push("https://viz.tools.investis.com/video/videoplayer-v1.0.2_Responsive/javascripts/jquery.xdomainajax.js");	
+				inv_CssOrJsArray.push("https://viz.tools.investis.com/video/videoplayer-v1.0.2_Responsive/javascripts/ga.js");
+				inv_CssOrJsArray.push("https://viz.tools.investis.com/video/videoplayer-v1.0.2_Responsive/javascripts/video-js.js");
+				inv_CssOrJsArray.push("https://viz.tools.investis.com/video/videoplayer-v1.0.2_Responsive/javascripts/BrightcoveUrls-secure-rollsroyce.js");
+				inv_CssOrJsArray.push("https://viz.tools.investis.com/rollsroyce/html5player/live/careers-merged/javascripts/deviceDetection.js");
+				inv_CssOrJsArray.push("https://viz.tools.investis.com/video/videoplayer-v1.0.2_Responsive/javascripts/jquery.coreCode.js");
+				
+				for(var i=0;i<inv_CssOrJsArray.length;i++)
+				{
+					addCssOrJs(inv_CssOrJsArray[i]);
+				}
+			}
+		}
+		var addCssOrJs=function(filepath)
+		{			
+			var filename=filepath;
+			if(filepath.split('/').length>0)
+			{
+				filename=filepath.split('/')[filepath.split('/').length-1];
+			}
+			if(filepath.lastIndexOf(".css") === (filepath.length - ".css".length))
+			{
+				if (!$j("link[href$='"+filename+"']").length)
+				{
+					$j('<link rel="stylesheet" href="'+filepath+'" type="text/css" />').appendTo("head").each(function() 
+					{ 
+						inv_CssOrJsCounter=inv_CssOrJsCounter+1;
+					});
+				}
+				else
+					inv_CssOrJsCounter=inv_CssOrJsCounter+1;
+			}
+			else if(filepath.lastIndexOf(".js") === (filepath.length - ".js".length))
+			{
+				if (!$j("script[src$='"+filename+"']").length)
+				{
+					 $j.ajax({
+						url: filepath,
+						crossDomain: true,
+						dataType: "script",
+						success: function () {
+							inv_CssOrJsCounter=inv_CssOrJsCounter+1;
+						},
+						error: function () {
+							// handle errors
+						}
+					});
+				}
+				else
+					inv_CssOrJsCounter=inv_CssOrJsCounter+1;
+			}
+		}
+		var checkAllAvailable=function()
+		{
+			if(inv_CssOrJsArray.length==inv_CssOrJsCounter)
+			{
+				clearInterval(inv_checkAllAvailable);					
+				inv_DBO_Detail = resourceCheck();				
+				
+				/*Urvi - 06/06/2016 removed rollsroyce careers site code ---------------- start*/
+				/*if(inv_playerContainer.attr('iscareerssite')=='true')// && inv_playerContainer.attr('testcareers')=='true')
+				{
+					if(inv_DBO_Detail.IsTouchDevice || navigator.userAgent.match(/Lumia 930/))
+					{
+						inv_playerContainer.attr("notDesktop","true");	
+					}
+				}*/
+				/*Urvi - 06/06/2016 removed rollsroyce careers site code ---------------- end*/
+				
+				/****************************************************************** Banner Player Start******************************************************************/	
+				if(op.isLoop && (navigator.userAgent.match(/Lumia 930/) || inv_DBO_Detail.IsTouchDevice)) 
+				{
+					op.autoPlay = false;
+				}
+				/****************************************************************** Banner Player End******************************************************************/	
+				/*Urvi - 06/06/2016 removed rollsroyce careers site code ---------------- start*/
+				/*if(inv_playerContainer.attr('iscareerssite')=='true' && (checkIsSmallDeviceOrMediumDevice() && !navigator.userAgent.match(/Lumia 930/)))
+				{
+					op.autoPlay = false;
+				}*/
+				/*Urvi - 06/06/2016 removed rollsroyce careers site code ---------------- end*/
+				if(inv_DBO_Detail.IsFlashSupported==true || inv_DBO_Detail.IsHtml5Supported==true)
+				{
+					var deepLink = false;
+					
+					/*////////////////////////////////Video Playlist on small mobile Start*/
+					/*Urvi - 06/06/2016 removed rollsroyce careers site code ---------------- start*/
+					/*if(checkIsNotCareerAndSmallDevice())
+					{
+						op.playerType = "singleplayer";
+					}*/
+					/*Urvi - 06/06/2016 removed rollsroyce careers site code ---------------- end*/
+					/*////////////////////////////////Video Playlist on small mobile End*/
+					
+					inv_playerContainer.coreCode({playerScreenModeChanged:op.playerScreenModeChanged,playerType:op.playerType,integrationMethod:op.integrationMethod,videoId:op.videoId,videoTags:op.videoTags,xmlPath:op.xmlPath,overlayPlay:op.overlayPlay,autoPlay:op.autoPlay,cuePointXMLPath:op.cuePointXMLPath,transcriptFilePath:transcriptPath,playerSpecificClass:inv_playerSpecificClass,layoutChange:inv_layoutChange,enableEffects:inv_enableEffects,enableCategorizedGallery:inv_enableCategorizedGallery,subMenuHover:inv_subMenuHover,showPageNumber:inv_showPageNumber,soundBars:inv_soundBars,soundBarsDefaultselection:inv_soundBarsDefaultselection,emailSubject:inv_emailSubject,emailBody:inv_emailBody,shareTitle:inv_videoShareTitle,gaAccount:inv_gaAccount,gaType:inv_gaType,gallery_playInSequence:inv_gallery_playInSequence,minigallery_playInSequence:inv_minigallery_playInSequence,repositionToStart:inv_repositionToStart,DBO_Detail:inv_DBO_Detail,shareWithCuePoint:inv_shareWithCuePoint,gallery_structure:inv_gallery_structure,minigallery_structure:inv_minigallery_structure,relatedData_structure:inv_relatedData_structure,relatedData:op.relatedData,isResponsive:inv_isResponsive,getVideoPlayPauseStatus:true,retrieveData:true,reArrangeThumbsOnBreakPoint:true,deepLinking:deepLink,debug:false,getMediaCompleteStatus:true});
+				}
+				else
+				{
+					inv_playerContainer.html("<div style='width:100%;height:100%;text-align:center;vertical-align:middle;'><a href='http://www.adobe.com/go/getflashplayer' target='_blank'><img src='http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif' alt='Get Adobe Flash player' /></a></div>");
+				}
+			}
+		}
+		var checkclick=function(evt) 
+		{
+			clearTimeout(inv_mouseOutBool);
+			inv_mouseOutBool=undefined;
+			
+			/*inv_mouseOutBool = true;*/
+			inv_playerContainer.find(".inv_videoMainContainer").trigger('mouseleave');
+			/*if(clickedOutsideElement(inv_playerContainer.find(".inv_videoMainContainer").attr('class'),evt))
+				inv_playerContainer_mouseleave();*/
+		}
+		var clickedOutsideElement=function(elemId,evt) 
+		{
+			var theElem = getEventTarget(evt);
+			if(theElem !=undefined)
+			{
+				while(theElem = theElem.offsetParent) 
+				{
+					if($j(theElem).attr('class') == elemId)
+					{
+						return false;
+					}
+				}
+				return true;
+			}
+			else
+				return false;
+		}		
+		var getEventTarget=function(evt) 
+		{
+			var targ;
+			if(evt==undefined)
+			{
+				evt=window.event;
+			}
+			if(evt!=undefined)
+			{
+				targ = (evt.target) ? evt.target : evt.srcElement;
+				
+				if(targ && targ.nodeType == 3)
+					targ = targ.parentNode;
+			}
+			return targ;
+		}
+		
+		
+		
+		/****************************************************************** Transcript Code Start ******************************************************************/		
+		var reszieTranscriptChildElements=function()
+		{
+			if(inv_playerContainer.find(".inv_videoTranscriptContent div").length != 0)
+			{
+				inv_playerContainer.find(".inv_videoTranscriptContent div").each(function()
+				{
+					if(this && $j(this).parent().length != 0){
+						$j(this).attr('positiontop',$j(this).offset().top-$j(this).parent().offset().top);
+					}
+				});
+			}
+		}
+		var resizeTranscript=function()
+		{
+			//KM
+			// For resize after full screen toggle issue 
+			if(inv_DBO_Detail.IsDesktop && inv_playerContainer.hasClass('inv_FullScreen') == false)
+			{
+				inv_playerContainer.find('.inv_videoMainContainer').width('100%');
+			} 
+			//KM
+			// Text offset update on resize
+			if(inv_playerContainer.find(".inv_videoTranscriptContent").length != 0)
+				inv_playerContainer.find(".inv_videoTranscriptContent").scrollTop(0);
+			reszieTranscriptChildElements();
+			
+			var top = parseInt(inv_playerContainer.find('.inv_transcriptSelected').parent().attr('positiontop'));
+			top = isNaN(top) ? 0 : top;
+			top = top - (inv_playerContainer.find(".inv_videoTranscriptContent").outerHeight()/2);
+			inv_playerContainer.find(".inv_videoTranscriptContent").scrollTop(top);
+		}
+		/****************************************************************** Transcript Code End ******************************************************************/
+		
+		
+		
+		/****************************************************************** RR Careers Start******************************************************************/	
+		var getUrlVars=function(key){
+			var url = window.location.href;
+			var parts = url.split(key);
+			var _id;
+			if(parts.length != 0)
+			{
+				for(var i=0; i<parts.length; i++){
+					if(parts[i].indexOf("rolls-royce") != -1 && parts[i].length == 14)
+					{
+						_id = parts[i];
+						return _id;
+					}
+				}
+			}else{
+				return null;
+			}
+		}		
+		var shuffle=function(o)// Collection creation of the video data
+		{
+			for(var j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
+			return o;
+		}
+		
+		var isIE=function() 
+		{
+		  var myNav = navigator.userAgent.toLowerCase();
+		  var msie = (myNav.indexOf('msie') != -1) ? parseInt(myNav.split('msie')[1]) : false;
+		  return msie;
+		}
+		
+		var callFBshare=function(shareTitle,shareBody,shareURL)
+		{
+			var img=inv_playerContainer.find(".inv_videoStillArea img").attr('src');
+			
+			 FB.ui({
+				method:'feed',
+				link:shareURL,
+				name:shareTitle,					
+				picture:img,
+				caption:' ',
+				description:shareBody
+			}, function(response)
+			{});
+		} 			
+		var inv_removeExtraFields=function(a)
+		{
+			var str=a.toString();
+			var date_inx=a.toString().indexOf(' creationDate:');
+			if(date_inx!=-1)
+			{
+				str=a.toString().substr(0,date_inx);
+			}
+			var encodedshortDescription=encodeURIComponent(str.toString());
+			encodedshortDescription=encodedshortDescription.replace('%3Cbr%2F%3E','%20').replace('%3Cbr%3E','%20').replace('%3Cb%3E','%20').replace('%3C%2Fb%3E','%20');
+
+			return decodeURIComponent(encodedshortDescription);
+			
+		}
+		var trackGA=function(label)
+		{
+			try
+			{
+				var str=inv_removeExtraFields(videoCollection[currentMediaIndex]["shortDescription"]);
+
+				switch(inv_gaType){
+					case "traditional":
+						inv_analytics.push(['b._trackEvent', window.location.hostname, label, str]);
+						inv_analytics.push(['inv._trackEvent', 'Video', label, str]);			   
+						break;
+					case "universal":
+						ga('newTracker.send', 'event', 'Video', label, str);   
+						ga('send', 'event', 'Video', label, str);
+						break;
+					case "tagmanager":
+						dataLayer.push({'event':'videoEvent', 'eventCategory':'Videos', 'eventAction':label, 'eventLabel':str});
+						break;
+					case undefined:
+						inv_analytics.push(['b._trackEvent', window.location.hostname, label, str]);
+						inv_analytics.push(['inv._trackEvent', 'Video', label, str]);			   
+						break;
+				}			   
+			}
+			catch(ee)
+			{
+				
+			} 	
+		}
+		
+		
+		var calculateWidthText=function(el)
+		{
+			var playheadWellclientWidth=0;
+			if(parseInt($j(el).outerWidth(true))==0)
+			{
+				playheadWellclientWidth=playheadWellclientWidth+parseInt($j(el).css('width').replace('px',''));
+				
+				if($j(el).css('borderLeftWidth')!='' && !isNaN(parseInt($j(el).css('borderLeftWidth').replace('px',''))))
+					playheadWellclientWidth=playheadWellclientWidth+parseInt($j(el).css('borderLeftWidth').replace('px',''));	
+					
+				if($j(el).css('borderRightWidth')!='' && !isNaN(parseInt($j(el).css('borderRightWidth').replace('px',''))))
+					playheadWellclientWidth=playheadWellclientWidth+parseInt($j(el).css('borderRightWidth').replace('px',''));	
+					
+				if($j(el).css('padding-left')!='' && !isNaN(parseInt($j(this).css('padding-left').replace('px',''))))
+					playheadWellclientWidth=playheadWellclientWidth+parseInt($j(el).css('padding-left').replace('px',''));	
+					
+				if($j(el).css('padding-right')!='' && !isNaN(parseInt($j(this).css('padding-right').replace('px',''))))
+					playheadWellclientWidth=playheadWellclientWidth+parseInt($j(el).css('padding-right').replace('px',''));
+						
+				if($j(el).css('margin-left')!='' && !isNaN(parseInt($j(this).css('margin-left').replace('px',''))))	
+					playheadWellclientWidth=playheadWellclientWidth+parseInt($j(el).css('margin-left').replace('px',''));	
+					
+				if($j(el).css('margin-right')!='' && !isNaN(parseInt($j(this).css('margin-right').replace('px',''))))	
+					playheadWellclientWidth=playheadWellclientWidth+parseInt($j(el).css('margin-right').replace('px',''));	
+				
+			}
+			else
+			{
+				playheadWellclientWidth=playheadWellclientWidth+parseInt($j(el).outerWidth(true));						
+			}				
+			return playheadWellclientWidth;
+		}
+		
+		var createCareersPageLayout=function(type)
+		{
+			try
+			{
+				if(op.rrcareers && op.playerType.toLowerCase()!="singleplayer")
+				{
+					var refId;
+					if(type == "changevideo")
+						refId = inv_playerContainer.data("videoId");
+					else
+					{
+						var videoId = getUrlVars("/$");
+						if(videoId)
+						{
+							refId = videoId; 
+						}
+						else
+						{
+							refId = inv_playerContainer.find(".inv_videoArea").attr("referenceid");
+						}
+					}
+					
+					//*** Sorting to get current media index
+					for(var i=0; i<videoCollection.length; i++)
+					{
+						var ref = videoCollection[i].referenceId;
+						if(ref == refId){
+							currentMediaIndex = i;
+							break;
+						}
+					}
+					/*Urvi - 06/06/2016 removed rollsroyce careers site code ---------------- start*/
+					//if(checkIsCareerOrNotSmallDevice())/*////////////////////////////////Video Playlist on small mobile*/
+					/*Urvi - 06/06/2016 removed rollsroyce careers site code ---------------- end*/
+					{
+						var currentVid = videoCollection[currentMediaIndex];
+						var nextVid = videoCollection[currentMediaIndex+1];
+						if(currentMediaIndex == videoCollection.length - 1){
+							nextVid = videoCollection[0];
+						}
+						var otherVideos = new Array();
+						for(var v=0; v<videoCollection.length; v++){
+							if(videoCollection[v].referenceId != currentVid.referenceId && videoCollection[v].referenceId != nextVid.referenceId)
+							otherVideos.push(videoCollection[v]);
+						}
+						if(type != "resize")
+						{
+							inv_playerContainer.find('.inv_videoListThumbnail').each(function(i, thumb){
+								inv_playerContainer.find('.inv_videoList').append(thumb);
+							});
+						}
+						otherVideos = otherVideos.slice(0, 3);
+						
+						inv_playerContainer.find(".bx-clone").remove();
+						
+						var currVidEle = inv_playerContainer.find('.inv_videoListThumbnailOverimg[refid="'+currentVid.referenceId+'"]').parent().parent();
+						currVidEle.appendTo(inv_playerContainer.find('.playnowcont'));
+						
+						if(videoCollection.length > 1)
+						{
+							var nextVidEle = inv_playerContainer.find('.inv_videoListThumbnailOverimg[refid="'+nextVid.referenceId+'"]').parent().parent();
+							nextVidEle.appendTo(inv_playerContainer.find('.playnextcont'));
+							
+							$j(otherVideos).each(function(i, vid)
+							{
+								var otherVidEle = inv_playerContainer.find('.inv_videoListThumbnailOverimg[refid="'+vid.referenceId+'"]').parent().parent();
+								inv_playerContainer.find('.bx-slider-holder').appendTo(inv_playerContainer.find('.morevideoscont'));							
+								otherVidEle.appendTo(inv_playerContainer.find('.morevideoscont .bx-slider-holder'));
+							});
+						}
+						else
+						{
+							inv_playerContainer.find('.playnextcont').hide();
+							inv_playerContainer.find('.morevideoscont').hide();
+						}
+						
+						inv_playerContainer.find(".bx-wrapper").remove();
+						var windowWidth=($j(window).width() <= 640);
+						/*Urvi - 06/06/2016 removed rollsroyce careers site code ---------------- start*/
+						/*if(inv_playerContainer.attr('testcareers')=='true')	
+						{
+							windowWidth=window.matchMedia("(max-width: 640px)").matches;
+						}	*/	
+						/*Urvi - 06/06/2016 removed rollsroyce careers site code ---------------- end*/		
+						if(windowWidth && otherVideos.length > 1)/*////////////////////////////////Video Playlist on small mobile*/
+						{
+							if(inv_playerContainer.find('.morevideoscont .bx-slider-holder').parent().hasClass("bx-viewport") == false || inv_playerContainer.attr('testcareers')=='true') 
+							{
+								try
+								{
+									bxSlider1 = inv_playerContainer.find(".morevideoscont .bx-slider-holder")
+									.bxSlider({
+										slideWidth: inv_playerContainer.width(),
+										startSlide: 0,
+										infiniteLoop:false,
+										minSlides: 1,
+										maxSlides: 1,
+										pager: (inv_playerContainer.find(".morevideoscont .bx-slider-holder .inv_videoListThumbnail").not(".bx-clone").length > 1) ? true: false,
+										onSliderLoad:function(currentIndex)
+										{
+											try
+											{
+												if(bxSlider1!=undefined)
+												{
+													bxSlider1.goToSlide(0);
+													inv_playerContainer.find('.morevideoscont .bx-slider-holder').css('transform','translate3d(0px, 0px, 0px)');
+												}
+											}
+											catch(e)
+											{
+												
+											}
+										}
+									});
+								}
+								catch(e)
+								{
+									
+								}
+							}
+							else
+							{
+								try
+								{
+									if(bxSlider1!=undefined)
+									{
+										bxSlider1.goToSlide(0);
+										inv_playerContainer.find('.morevideoscont .bx-slider-holder').css('transform','translate3d(0px, 0px, 0px)');
+									}
+								}
+								catch(e)
+								{
+									
+								}
+							 }
+						}
+						
+						inv_playerContainer.find('.inv_videoList').hide();
+						
+						//if(inv_playerContainer.attr('testcareers')!='true')
+						{
+							if(type != "resize")
+							{
+								inv_playerContainer.find('.inv_videoControls_extra').appendTo(inv_playerContainer.find('.inv_videoControls'));
+								inv_playerContainer.find(".controls-container").remove();
+								$j("<div class='controls-container'></div>").appendTo(inv_playerContainer.find('.inv_videoControls'));
+								
+								inv_playerContainer.find('.inv_videoControls_extra').each(function(i, btn){
+									if(!$j(btn).hasClass('inv_videoGallery'))
+									$j(btn).appendTo(inv_playerContainer.find('.controls-container'));
+								});
+							}
+							
+							inv_playerContainer.find('.inv_nowplayingLabel').appendTo(inv_playerContainer.find('.inv_nowplayingContainer'));
+							inv_playerContainer.find('.inv_videoInformation').appendTo(inv_playerContainer.find('.inv_nowplayingContainer'));
+							inv_playerContainer.find('.videoListBtn').appendTo(inv_playerContainer.find('.inv_videoListBtnContainer'));
+							
+							if(op.showInfo)
+							{
+								inv_playerContainer.find('.inv_shareBtn').appendTo(inv_playerContainer.find('.inv_videoListBtnContainer'));
+								inv_playerContainer.find('.videoListLabel').appendTo(inv_playerContainer.find('.inv_videoListBtnContainer'));
+							}
+							else
+							{
+								inv_playerContainer.find('.videoListLabel').appendTo(inv_playerContainer.find('.inv_videoListBtnContainer'));
+								inv_playerContainer.find('.inv_shareBtn').appendTo(inv_playerContainer.find('.inv_videoListBtnContainer'));
+							}
+						}
+						
+						if(op.showInfo)
+						{
+							inv_playerContainer.find(".inv_infoBtnNewDetail_Title").html(videoCollection[currentMediaIndex]["shortDescription"]);
+							inv_playerContainer.find(".inv_infoBtnNewDetail_Description").html(videoCollection[currentMediaIndex]["longDescription"]);
+						}
+						var s1=videoCollection[currentMediaIndex]["name"].toString().split("<br/>")[0];
+						var s2=videoCollection[currentMediaIndex]["name"].toString().split("<br/>")[1];
+						inv_playerContainer.find(".inv_videoInformation_Title").html(s1);
+						if(s2==undefined || s2=='')
+						{
+							inv_playerContainer.find(".inv_videoInformation_Title").addClass("oneLine");
+							inv_playerContainer.find(".inv_videoInformation_Description").html("");
+						}
+						else
+						{
+							inv_playerContainer.find(".inv_videoInformation_Title").removeClass("oneLine");
+							inv_playerContainer.find(".inv_videoInformation_Description").html(s2);
+						}
+						if(type != "resize")
+						{
+							inv_playerContainer.find('.inv_videoGallery').slideUp("fast");
+							inv_playerContainer.find(".videoListBtn").removeClass("list-active");
+							inv_playerContainer.removeClass("galleryActive");
+						}
+					}
+				}
+			}
+			catch(e){}
+			changeLayoutControlbar(type);				
+		}
+		
+		var changeLayoutControlbar=function(type)
+		{
+			if(op.rrcareers && op.playerType.toLowerCase()!="singleplayer")
+			{
+				var windowWidth=($j(window).width() <= 700);
+				/*Urvi - 06/06/2016 removed rollsroyce careers site code ---------------- start*/
+				/*if(inv_playerContainer.attr('testcareers')=='true')	
+				{
+					windowWidth=window.matchMedia("(max-width: 700px)").matches;
+				}	*/
+				/*Urvi - 06/06/2016 removed rollsroyce careers site code ---------------- end*/
+				if(windowWidth)
+				{
+					clearTimeout(inv_mouseOutBool);
+					inv_mouseOutBool=undefined;
+					
+					/*Urvi - 06/06/2016 removed rollsroyce careers site code ---------------- start*/
+					/*if(inv_playerContainer.attr('testcareers')=='true')
+					{
+						if(type != "resize")
+						{
+							inv_playerContainer.find('.inv_controlbigtext').appendTo(inv_playerContainer.find('.inv_videoControls'));
+							inv_playerContainer.find('.inv_nowplayingContainer').appendTo(inv_playerContainer.find('.inv_videoControls'));
+							inv_playerContainer.find('.inv_videoListBtnContainer').appendTo(inv_playerContainer.find('.inv_videoControls'));
+							
+							inv_playerContainer.find(".controls-container").remove();
+							$j("<div class='controls-container'></div>").appendTo(inv_playerContainer.find('.inv_videoControls'));								
+						}
+						inv_playerContainer.find('.controls-container').addClass("inv_videoControls_extra");
+						
+						inv_playerContainer.find('.inv_controlbigtext').appendTo(inv_playerContainer.find('.controls-container'));
+						inv_playerContainer.find('.inv_nowplayingContainer').appendTo(inv_playerContainer.find('.controls-container'));
+						inv_playerContainer.find('.inv_videoListBtnContainer').appendTo(inv_playerContainer.find('.controls-container'));
+							
+						if(type != "resize")
+						{
+							inv_playerContainer.find('.inv_videoGallery').appendTo(inv_playerContainer.find('.inv_videoMainContainer_inner'));
+							inv_playerContainer.find('.inv_videoControls').appendTo(inv_playerContainer.find('.inv_videoMainContainer_inner'));			
+							inv_playerContainer.find(".inv_videoControls_parent").remove();
+							$j("<div class='inv_videoControls_parent'></div>").insertBefore(inv_playerContainer.find('.inv_videoMainContainer_inner'));
+						}	
+						
+						inv_playerContainer.find('.inv_videoControls').appendTo(inv_playerContainer.find('.inv_videoControls_parent'));												
+						inv_playerContainer.find('.controls-container').appendTo(inv_playerContainer.find('.inv_videoControls_parent'));
+						inv_playerContainer.find('.inv_videoGallery').appendTo(inv_playerContainer.find('.inv_videoControls_parent'));
+					}	
+					else*/
+					/*Urvi - 06/06/2016 removed rollsroyce careers site code ---------------- end*/
+					
+					{
+						inv_playerContainer.find('.inv_videoControls').appendTo(inv_playerContainer);
+						inv_playerContainer.find('.inv_videoGallery').appendTo(inv_playerContainer);
+						inv_playerContainer.find('.inv_videoListBtnContainer').appendTo(inv_playerContainer);	
+					}
+					if(op.showInfo && op.rrcareers)
+					{
+						inv_playerContainer.find('.inv_infoBtnNewDetail').appendTo(inv_playerContainer);
+					}
+					
+					
+					inv_playerContainer.find(".inv_videoListDescription").bind("touchstart", function(e){
+						e.stopPropagation();
+					});
+					
+					inv_playerContainer.find(".inv_shareBtn.inv_shareBtnClick").trigger("click");
+				}
+				else
+				{
+					if(type == "changevideo")
+					{
+						/*Urvi - 06/06/2016 removed rollsroyce careers site code ---------------- start*/
+						//if(inv_playerContainer.attr('testcareers')!='true')
+							inv_playerContainer.find(".inv_videoControls").slideDown("fast");
+						/*else
+						{
+							inv_playerContainer.find('.inv_videoControls').show();
+							inv_playerContainer.find('.inv_videoControls_parent').show();
+						}*/
+						/*Urvi - 06/06/2016 removed rollsroyce careers site code ---------------- end*/
+							
+						inv_playerContainer.find('.inv_videoGallery').slideUp("fast");
+						inv_playerContainer.find(".videoListBtn").removeClass("list-active");
+						inv_playerContainer.removeClass("galleryActive");
+					}
+					else
+					{
+						inv_playerContainer.find('.inv_overlayPlayClicked').addClass('trans');
+						
+						/*Urvi - 06/06/2016 removed rollsroyce careers site code ---------------- start*/
+						//if(inv_playerContainer.attr('testcareers')!='true')
+						{
+							inv_playerContainer.find('.inv_videoControls').appendTo(inv_playerContainer.find('.inv_videoMainContainer_inner'));						
+							inv_playerContainer.find('.inv_videoGallery').appendTo(inv_playerContainer.find('.inv_videoControls'));
+						
+							inv_playerContainer.find('.inv_videoListBtnContainer').appendTo(inv_playerContainer.find('.controls-container'));
+							
+						}
+						/*else
+						{
+							if(type != "resize")
+							{
+								inv_playerContainer.find('.inv_controlbigtext').appendTo(inv_playerContainer.find('.inv_videoControls'));
+								inv_playerContainer.find('.inv_nowplayingContainer').appendTo(inv_playerContainer.find('.inv_videoControls'));
+								inv_playerContainer.find('.inv_videoListBtnContainer').appendTo(inv_playerContainer.find('.inv_videoControls'));
+								
+								inv_playerContainer.find(".controls-container").remove();
+								$j("<div class='controls-container'></div>").appendTo(inv_playerContainer.find('.inv_videoControls'));								
+							}
+							inv_playerContainer.find('.controls-container').addClass("inv_videoControls_extra");
+							
+							inv_playerContainer.find('.inv_controlbigtext').appendTo(inv_playerContainer.find('.controls-container'));
+							inv_playerContainer.find('.inv_nowplayingContainer').appendTo(inv_playerContainer.find('.controls-container'));
+							inv_playerContainer.find('.inv_videoListBtnContainer').appendTo(inv_playerContainer.find('.controls-container'));
+								
+							if(type != "resize")
+							{
+								inv_playerContainer.find('.inv_videoGallery').appendTo(inv_playerContainer.find('.inv_videoMainContainer_inner'));
+								inv_playerContainer.find('.inv_videoControls').appendTo(inv_playerContainer.find('.inv_videoMainContainer_inner'));			
+								inv_playerContainer.find(".inv_videoControls_parent").remove();
+								$j("<div class='inv_videoControls_parent'></div>").insertBefore(inv_playerContainer.find('.inv_videoMainContainer_inner'));
+							}	
+							
+							inv_playerContainer.find('.inv_videoControls').appendTo(inv_playerContainer.find('.inv_videoControls_parent'));												
+							inv_playerContainer.find('.controls-container').appendTo(inv_playerContainer.find('.inv_videoControls_parent'));
+							inv_playerContainer.find('.inv_videoGallery').appendTo(inv_playerContainer.find('.inv_videoControls_parent'));
+						}*/
+						/*Urvi - 06/06/2016 removed rollsroyce careers site code ---------------- end*/
+						
+						if(op.showInfo)
+						{
+							inv_playerContainer.find('.inv_infoBtnNewDetail').appendTo(inv_playerContainer.find('.inv_videoControls'));
+							inv_playerContainer.find('.inv_videoListBtnContainer').appendTo(inv_playerContainer.find('.controls-container'));
+						}
+					}
+					
+						
+					
+					
+					setTimeout(function()
+					{
+						var calcWidth;	
+						/*Urvi - 06/06/2016 removed rollsroyce careers site code ---------------- start*/
+						//if(inv_playerContainer.attr('testcareers')!='true')
+						{				
+							if(!inv_playerContainer.find(".inv_videoControls").is(":visible"))
+							{
+								inv_playerContainer.find(".inv_videoControls").show();
+								calcWidth = inv_playerContainer.find(".controls-container").width() -
+											calculateWidthText(inv_playerContainer.find(".inv_controlbigtext")) -
+											calculateWidthText(inv_playerContainer.find(".inv_nowplayingLabel")) -
+											calculateWidthText(inv_playerContainer.find(".inv_videoListBtnContainer")) - 20;
+								inv_playerContainer.find(".inv_videoControls").hide();
+							}						
+							inv_playerContainer.find(".inv_videoInformation").width(calcWidth);
+							inv_playerContainer.find(".inv_videoListDescription").css("max-height", inv_playerContainer.height() * 0.5);
+						}
+						/*else
+						{
+							var flag=(inv_playerContainer.find(".inv_videoControls_parent").is(":visible") == false);
+							if(flag)
+								inv_playerContainer.find(".inv_videoControls_parent").show();
+							
+							calcWidth = inv_playerContainer.find(".controls-container").width() -
+										calculateWidthText(inv_playerContainer.find(".inv_controlbigtext")) -
+										calculateWidthText(inv_playerContainer.find(".inv_nowplayingLabel")) -
+										calculateWidthText(inv_playerContainer.find(".inv_videoListBtnContainer")) - 30;
+							if(flag)
+								inv_playerContainer.find(".inv_videoControls_parent").hide();
+												
+							inv_playerContainer.find(".inv_videoInformation").width(calcWidth);
+						}*/
+						/*Urvi - 06/06/2016 removed rollsroyce careers site code ---------------- end*/
+						
+					}, 1);
+				}
+				
+				inv_playerContainer.find(".inv_videoMainContainer").unbind('mousemove');
+				inv_playerContainer.find(".inv_videoMainContainer").unbind('mouseleave');
+				inv_playerContainer.find(".inv_videoMainContainer").bind('mousemove', function(e)
+				{
+					clearTimeout(inv_mouseOutBool);
+					inv_mouseOutBool=undefined;
+					
+					inv_playerContainer.find(".inv_overlayPlay.inv_overlayPlayClicked").removeClass("trans");
+					
+					if(windowWidth)
+					{
+						
+					}
+					else if(!inv_playerContainer.find(".inv_videoControls").is(":visible"))
+					{
+						inv_playerContainer.find(".inv_videoControls").slideDown("fast");
+						if(op.showInfo)
+						{
+							inv_playerContainer.find(".inv_infoBtnNew").removeClass("active");
+							inv_playerContainer.find(".inv_infoBtnNewDetail").slideUp("fast");
+						}
+					}
+				});
+				inv_playerContainer.find(".inv_videoMainContainer").bind('mouseleave', function()
+				{
+					clearTimeout(inv_mouseOutBool);		
+					inv_mouseOutBool=undefined;
+								
+					inv_mouseOutBool=setTimeout(function()
+					{
+						inv_playerContainer.find(".inv_overlayPlay.inv_overlayPlayClicked").addClass("trans");
+						if(windowWidth)
+						{
+							
+						}
+						else if(inv_playerContainer.find(".inv_videoControls").is(":visible"))
+						{
+							inv_playerContainer.find(".inv_videoControls").slideUp("fast");
+							inv_playerContainer.find(".videoListBtn.list-active").trigger("click");
+							inv_playerContainer.find(".videoListBtn.list-active").trigger("click");
+							
+							inv_playerContainer.find(".inv_shareBtn.inv_shareBtnClick").trigger("click");
+							inv_playerContainer.find('.inv_videoGallery').slideUp("fast");
+							inv_playerContainer.find(".videoListBtn").removeClass("list-active");
+							inv_playerContainer.removeClass("galleryActive");
+							
+							if(op.showInfo)
+							{
+								inv_playerContainer.find(".inv_infoBtnNew").removeClass("active");
+								inv_playerContainer.find(".inv_infoBtnNewDetail").slideUp("fast");
+							}
+						}
+					}, inv_mouseOutTimeout);
+				});
+				
+				if(inv_DBO_Detail.IsTouchDevice)
+				{
+					clearTimeout(inv_mouseOutBool);
+					inv_mouseOutBool=undefined;
+					
+					inv_playerContainer.find(".inv_videoMainContainer")
+						.unbind("touchstart")
+						.bind("touchstart", function(e){
+							e.stopPropagation();
+							inv_playerContainer.find(".inv_videoMainContainer").trigger('mousemove');
+						});
+						
+					$j(document).unbind('touchstart');
+					$j(document).bind('touchstart',checkclick);
+				}
+				/*////////////////////////////////Video Playlist on small mobile Start*/
+				//if(inv_playerContainer.width() <= 321 && !inv_playerContainer.hasClass("inv_MediumMobile"))
+				
+				/*Urvi - 06/06/2016 removed rollsroyce careers site code ---------------- start*/
+				/*if(checkIsNotCareerAndSmallDevice())
+				{ 
+					inv_playerContainer.find(".inv_videoInformation").insertBefore(inv_playerContainer.find(".inv_videoMainContainer"));
+				}
+				else*/
+				{
+					inv_playerContainer.find(".inv_videoInformation").appendTo(inv_playerContainer.find(".inv_nowplayingContainer"));	
+				}
+				/*Urvi - 06/06/2016 removed rollsroyce careers site code ---------------- end*/
+				/*////////////////////////////////Video Playlist on small mobile End*/
+			}
+			else if(op.rrcareers)
+			{
+				
+				{
+					inv_playerContainer.find(".inv_videoMainContainer").unbind('mousemove');
+					inv_playerContainer.find(".inv_videoMainContainer").unbind('mouseleave');
+					inv_playerContainer.find(".inv_videoMainContainer").bind('mousemove', function()
+					{
+						clearTimeout(inv_mouseOutBool);
+						inv_mouseOutBool=undefined;
+						
+						inv_playerContainer.find(".inv_overlayPlay.inv_overlayPlayClicked").removeClass("trans");
+						/*if(inv_playerContainer.attr('iscareerssite')=='true')
+						{
+							inv_playerContainer.find(".inv_videoControls").fadeIn("fast");
+							inv_playerContainer.find(".inv_videoMainContainer").trigger('mouseleave');
+						}*/
+					});
+					inv_playerContainer.find(".inv_videoMainContainer").bind('mouseleave', function()
+					{
+						clearTimeout(inv_mouseOutBool);
+						inv_mouseOutBool=undefined;
+						
+						inv_mouseOutBool=setTimeout(function()
+						{
+							inv_playerContainer.find(".inv_overlayPlay.inv_overlayPlayClicked").addClass("trans");
+							/*if(inv_playerContainer.attr('iscareerssite')=='true')
+							{
+								if(inv_playerContainer.find(".inv_overlayPlay.inv_overlayPlayClicked").length!=0)
+								{
+									inv_playerContainer.find(".inv_videoControls").fadeOut("fast");								
+								}
+							}*/
+						}, inv_mouseOutTimeout);
+					});
+				}
+				
+				if(inv_DBO_Detail.IsTouchDevice)
+				{
+					clearTimeout(inv_mouseOutBool);
+					inv_mouseOutBool=undefined;
+					
+					inv_playerContainer.find(".inv_videoMainContainer")
+						.unbind("touchstart")
+						.bind("touchstart", function(e){
+							e.stopPropagation();
+							inv_playerContainer.find(".inv_videoMainContainer").trigger('mousemove');
+						});
+						
+					$j(document).unbind('touchstart');
+					$j(document).bind('touchstart',checkclick);
+				}	
+			}
+			
+			/*Urvi - 06/06/2016 removed rollsroyce careers site code ---------------- start*/			
+			/*if(inv_playerContainer.attr('testcareers')=='true') //calculating progressbar width
+			{
+				var flag=false;
+				if(inv_playerContainer.find(".inv_videoControls_parent").is(":visible") == false)
+				{
+					inv_playerContainer.find(".inv_videoControls_parent").show();
+					flag=true;
+				}	
+				var cntrl_w=inv_playerContainer.find(".inv_videoControls").width();				
+				var others_w=0;
+				inv_playerContainer.find(".inv_videoControls>div").each(function()
+				{
+					if($j(this).attr("class").indexOf("inv_playheadWellContainer")==-1 && $j(this).attr("class").indexOf("inv_videoControls_extra") && $j(this).outerWidth(true)!=0)
+					{
+						others_w=others_w+$j(this).outerWidth(true);
+					}
+				});
+				inv_playerContainer.find(".inv_playheadWellContainer").width(cntrl_w-others_w);
+				if(flag)
+				{
+					inv_playerContainer.find(".inv_videoControls_parent").hide();
+				}
+			}*/
+			/*Urvi - 06/06/2016 removed rollsroyce careers site code ---------------- end*/
+		}
+		/****************************************************************** RR Careers End******************************************************************/	
+		var checkIsSmallDeviceOrMediumDevice=function()
+		{
+			var cond1=(inv_DBO_Detail.IsSmallMobile || (inv_DBO_Detail.IsDesktop && inv_playerContainer.hasClass("inv_SmallMobile")));
+			var cond2=(inv_DBO_Detail.IsLargeMobile || (inv_DBO_Detail.IsDesktop && inv_playerContainer.hasClass("inv_MediumMobile")));
+
+			return (cond1 || cond2);
+		}
+		/*var checkIsNotCareerAndSmallDevice=function()
+		{
+			var cond1=(inv_playerContainer.attr('iscareerssite')!='true');
+			var cond2=(inv_DBO_Detail.IsSmallMobile || (inv_DBO_Detail.IsDesktop && inv_playerContainer.hasClass("inv_SmallMobile")));
+
+			return (cond1 && cond2);
+		}
+		var checkIsCareerOrNotSmallDevice=function()
+		{
+			var cond1=(inv_playerContainer.attr('iscareerssite')=='true');
+			var cond2=!(inv_DBO_Detail.IsSmallMobile || (inv_DBO_Detail.IsDesktop && inv_playerContainer.hasClass("inv_SmallMobile")));
+
+			return (cond1 || cond2);
+		}
+		var checkIsCareerAndSmallDevice=function()
+		{
+			var cond1=(inv_playerContainer.attr('iscareerssite')=='true');
+			var cond2=(inv_DBO_Detail.IsSmallMobile || (inv_DBO_Detail.IsDesktop && inv_playerContainer.hasClass("inv_SmallMobile")));
+
+			return (cond1 && cond2);
+		}*/
+		var checkIsSmallDevice=function()
+		{
+			var cond2=(inv_DBO_Detail.IsSmallMobile || (inv_DBO_Detail.IsDesktop && inv_playerContainer.hasClass("inv_SmallMobile")));
+
+			return (cond2);
+		}	
+		var inv_videoPlayeroInstance;	
+		var triggerVideoOnSmallDevice=function(refId)
+		{
+			try
+			{
+				for(var i=0; i<videoCollection.length; i++)
+				{
+					var ref = videoCollection[i].referenceId;
+					if(ref == refId){
+						currentMediaIndex = i;
+						break;
+					}
+				}
+				if(currentMediaIndex==undefined)
+					currentMediaIndex=0;
+				inv_playerContainer.find(".inv_videoStillArea").css("display","block");
+				if(inv_playerContainer.find(".inv_videoStillArea img").length==0)
+				{
+					inv_playerContainer.find(".inv_videoStillArea").html("<img src='"+videoCollection[currentMediaIndex]["videoURL"]+"' style='top: 0;left: 0px;width: 100%;position: absolute;'></img>");
+				}
+				else
+				{
+					inv_playerContainer.find(".inv_videoStillArea img").attr("src", videoCollection[currentMediaIndex]["videoStillURL"]);
+				}
+				inv_playerContainer.find(".inv_videoStillArea").css("display","block");
+			 	if(inv_playerContainer.find(".inv_videoArea video").length==0)
+				{
+					inv_playerContainer.find(".inv_videoArea").html("<video src='"+videoCollection[currentMediaIndex]["videoURL"]+"' width='100%' height='100%' style='top: 0;left: 0px;width: 100%;position: absolute;'></video>");
+					inv_videoPlayeroInstance=inv_playerContainer.find(".inv_videoArea video")[0];
+					$j(inv_videoPlayeroInstance).bind('durationchange',function()
+					{
+						inv_playerContainer.find(".inv_videoLoaderArea").css("display","none");
+						if(inv_playerContainer.find(".inv_videoStillArea img").length==0)
+						{
+							inv_playerContainer.find(".inv_videoStillArea").html("<img src='"+videoCollection[currentMediaIndex]["videoURL"]+"' style='top: 0;left: 0px;width: 100%;position: absolute;'></img>");
+						}
+						else
+						{
+							inv_playerContainer.find(".inv_videoStillArea img").attr("src", videoCollection[currentMediaIndex]["videoStillURL"]);
+						}
+						inv_playerContainer.find(".inv_videoStillArea").css("display","block");
+					});
+					inv_playerContainer.find(".inv_overlayPlay").unbind("click");
+					inv_playerContainer.find(".inv_overlayPlay").bind('click',function()
+					{
+						inv_videoPlayeroInstance.play();	
+					});
+					
+				}
+				else
+				{
+					inv_playerContainer.find(".inv_videoArea video").attr("src", videoCollection[currentMediaIndex]["videoURL"]);	
+				}
+				
+				
+				inv_playerContainer.find(".inv_videoArea").attr("referenceid",videoCollection[currentMediaIndex]["referenceId"]);				
+					
+				var s1=videoCollection[currentMediaIndex]["name"].toString().split("<br/>")[0];
+				var s2=videoCollection[currentMediaIndex]["name"].toString().split("<br/>")[1];
+				inv_playerContainer.find(".inv_videoInformation_Title").html(s1);
+				if(s2==undefined || s2=='')
+				{
+					inv_playerContainer.find(".inv_videoInformation_Title").addClass("oneLine");
+					inv_playerContainer.find(".inv_videoInformation_Description").html("");
+				}
+				else
+				{
+					inv_playerContainer.find(".inv_videoInformation_Title").removeClass("oneLine");
+					inv_playerContainer.find(".inv_videoInformation_Description").html(s2);
+				}
+				
+				inv_playerContainer.data("videoId", inv_playerContainer.find(".inv_videoArea").attr("referenceid"));				
+				inv_playerContainer.trigger("videoLoaded");
+				createCareersPageLayout("changevideo");
+				//changeLayoutControlbar("changevideo");
+			}
+			catch(e)
+			{
+				
+			}
+				
+		}
+///////////////////////////////////////////////////////////Public Methods///////////////////////////////////////////////////////////			
+		this.triggerVideo=function(refId)
+		{
+			/*Urvi - 06/06/2016 removed rollsroyce careers site code ---------------- start*/
+			/*////////////////////////////////Video Playlist on small mobile Start*/
+			//if(inv_DBO_Detail && inv_DBO_Detail.IsSmallMobile)
+			/*if(checkIsNotCareerAndSmallDevice())
+			{
+				for(var i=0; i<videoCollection.length; i++){
+					var ref = videoCollection[i].referenceId;
+					if(ref == refId){
+						currentMediaIndex = i;
+						break;
+					}
+				}
+				
+				inv_playerContainer.find(".inv_videoArea video").attr("src", videoCollection[currentMediaIndex]["videoURL"]);
+				inv_playerContainer.find(".inv_videoStillArea img").attr("src", videoCollection[currentMediaIndex]["videoStillURL"]);
+				
+				if(op.rrcareers && op.playerType.toLowerCase()=="galleryplayer")
+				{
+					var s1=videoCollection[currentMediaIndex]["name"].toString().split("<br/>")[0];
+					var s2=videoCollection[currentMediaIndex]["name"].toString().split("<br/>")[1];
+					inv_playerContainer.find(".inv_videoInformation_Title").html(s1);
+					if(s2==undefined || s2=='')
+					{
+						inv_playerContainer.find(".inv_videoInformation_Title").addClass("oneLine");
+						inv_playerContainer.find(".inv_videoInformation_Description").html("");
+					}
+					else
+					{
+						inv_playerContainer.find(".inv_videoInformation_Title").removeClass("oneLine");
+						inv_playerContainer.find(".inv_videoInformation_Description").html(s2);
+					}
+				}
+				else
+				{
+					inv_playerContainer.find(".inv_videoInformation_Title").html(videoCollection[currentMediaIndex]["shortDescription"]);
+					inv_playerContainer.find(".inv_videoInformation_Description").html(videoCollection[currentMediaIndex]["longDescription"]);
+				}
+			}
+			else*/
+			/*Urvi - 06/06/2016 removed rollsroyce careers site code ---------------- end*/
+			/*////////////////////////////////Video Playlist on small mobile End*/
+			{
+				var vid_cont = inv_playerContainer.find('.inv_videoListThumbnailOverimg[refid="'+refId+'"]');
+				if(vid_cont.length != 0)
+				{
+					vid_cont.parent().trigger("click");
+				}
+			}
+		} 
+				
+		this.playerLoaded=function()
+		{
+			inv_playerContainer.find(".inv_videoControls").css("display","none");
+			if(op.integrationMethod=="iframe")
+				$j(window.frameElement).height(inv_playerContainer.height());
+				
+			inv_playerContainer.find(".inv_videoStillArea").css("display","block");
+			
+			inv_playerContainer.find(".inv_videoStillArea").hover(
+			  function() {
+				$j( this ).css("display","block");
+			  }, function() {
+				$j( this ).css("display","block");
+			  }
+			);
+			
+			/*Urvi - 06/06/2016 removed rollsroyce careers site code ---------------- start*/
+			/*if(inv_playerContainer.attr('iscareerssite')=='true' && op.autoPlay)
+			{
+				inv_playerContainer.find(".inv_videoStillArea").css("display","none");
+			}*/
+			/*Urvi - 06/06/2016 removed rollsroyce careers site code ---------------- end*/
+			/****************************************************************** Transcript Code ******************************************************************/			
+			reszieTranscriptChildElements();
+			$j(window).bind('orientationchange',function(e){resizeTranscript(e);});
+			
+			if(op.transcriptFilePath)
+			{
+			}
+			else
+			{
+				inv_playerContainer.find(".inv_videoTranscript").addClass("noTranscript");
+			}			
+			/****************************************************************** Banner Player ******************************************************************/
+			if(op.isBanner==true)
+			{
+				/*Urvi - 06/06/2016 removed rollsroyce careers site code ----------------*/
+				if(!op.rrcareers) // || !inv_playerContainer.attr('iscareerssite')=='true') //27-5-2016 - homepage banner issue //VD
+				{
+					inv_playerContainer.find(".inv_videoControls").addClass("banner");	
+					inv_playerContainer.find(".inv_playheadWellContainer").addClass("banner");
+					//inv_playerContainer.find(".inv_videoArea").css("height","99.6% !important");
+				}
+				
+				inv_playerContainer.find(".inv_videoInformation").addClass("banner");
+				if(op.isLoop && !(inv_DBO_Detail.IsTouchDevice || navigator.userAgent.match(/Lumia 930/))) // Banner player with loop - vine
+					inv_playerContainer.find(".inv_overlayPlay").addClass("banner");
+				inv_playerContainer.find(".inv_videoTranscript").addClass("banner");
+								
+				if(op.loop)
+				{
+					$j(pageSpecificVariable).each(function(index, player) 
+					{
+						if(player.el && player.el.id)
+						{
+							if(player.el.id.indexOf(inv_playerContainer.attr('id')) != -1)
+							{
+								player.loop(true);
+							}
+						}
+					});
+				}
+			}
+			
+			/****************************************************************** RR Careers ******************************************************************/	
+			if(op.rrcareers)
+			{
+				/*Urvi - 06/06/2016 removed rollsroyce careers site code ---------------- start*/
+				try
+				{
+					
+					if(navigator.userAgent.match(/Lumia 930/))
+					{
+						inv_playerContainer.attr("IsLumia","true");	
+						inv_playerContainer.find("video").bind('play',function()
+						{
+							inv_playerContainer.find(".inv_videoStillArea").css("display","none");						
+							inv_playerContainer.attr('playerMode','playing');
+							inv_playerContainer.find(".inv_overlayPlay").addClass("inv_overlayPlayClicked");
+						});
+						inv_playerContainer.find("video").bind('pause',function()
+						{
+							inv_playerContainer.find(".inv_overlayPlay").removeClass("inv_overlayPlayClicked");	
+						});
+						inv_playerContainer.find("video").bind('durationchange',function()
+						{
+							inv_playerContainer.attr('playerMode','paused');	
+						});
+						inv_playerContainer.find("video").bind('ended',function()
+						{
+							inv_playerContainer.find(".inv_videoStillArea").css("display","block");
+							inv_playerContainer.attr('playerMode','paused');
+							inv_playerContainer.find(".inv_overlayPlay").removeClass("inv_overlayPlayClicked");
+						});
+						inv_playerContainer.find(".inv_overlayPlay").unbind('click');
+						inv_playerContainer.find(".inv_overlayPlay").bind('click',function()
+						{
+							if($j(this).hasClass("inv_overlayPlayClicked"))
+							{
+								inv_playerContainer.find("video")[0].pause();
+								
+							}
+							else
+							{
+								inv_playerContainer.find("video")[0].play();
+							}
+							
+						});										
+					}
+				}
+				catch(e){}
+				/*if(navigator.userAgent.match(/Lumia 930/) && inv_playerContainer.attr('iscareerssite')=='true')
+				{
+					inv_playerContainer.attr("IsLumia","true");					
+				}*/
+				/*Urvi - 06/06/2016 removed rollsroyce careers site code ---------------- end*/
+				$j(window).bind('orientationchange',function()
+				{
+					createCareersPageLayout("resize");
+					//changeLayoutControlbar("resize");
+				});
+				
+				if(op.playerType.toLowerCase()=="singleplayer")
+				{
+					/*Urvi - 06/06/2016 removed rollsroyce careers site code ---------------- start*/
+					//if(!(inv_playerContainer.attr('iscareerssite')=='true'))
+					{
+						inv_playerContainer.find(".inv_videoControls").addClass("banner");
+					}
+					/*Urvi - 06/06/2016 removed rollsroyce careers site code ---------------- end*/
+					inv_playerContainer.find(".inv_shareBtn").addClass("banner");
+					inv_playerContainer.find(".inv_shareControls").addClass("banner");
+					if(!inv_DBO_Detail.IsDesktop)
+					{
+						inv_playerContainer.find(".inv_overlayPlay").removeClass("banner");
+					}
+					
+				}
+				else 
+				{
+					/*Urvi:16/05/2016 full width playlist start*/
+					/*Urvi - 06/06/2016 removed rollsroyce careers site code ---------------- start*/	
+					/*if(inv_playerContainer.attr('testcareers')=='true' && op.playerType.toLowerCase()!="singleplayer")
+					{
+						if(inv_DBO_Detail.IsDesktop)
+						{
+							inv_playerContainer.addClass('fullscreenVideo');
+							inv_playerContainer.find(".inv_overlayPlay").bind('click.fullscreenVideo',function()
+							{
+								if(inv_playerContainer.find(".inv_fullscreenBtn").attr('class').indexOf('inv_normalmodeBtn')==-1)
+								{
+									inv_playerContainer.find(".inv_fullscreenBtn").trigger('click');
+								}
+							});
+							inv_playerContainer.find(".inv_playBtn").bind('click.fullscreenVideo',function()
+							{
+								if(inv_playerContainer.find(".inv_fullscreenBtn").attr('class').indexOf('inv_normalmodeBtn')==-1)
+								{
+									inv_playerContainer.find(".inv_fullscreenBtn").trigger('click');
+								}
+							});
+							inv_playerContainer.find(".inv_playheadWellContainer").bind('click.fullscreenVideo',function()
+							{
+								if(inv_playerContainer.find(".inv_fullscreenBtn").attr('class').indexOf('inv_normalmodeBtn')==-1)
+								{
+									inv_playerContainer.find(".inv_fullscreenBtn").trigger('click');
+								}
+							});
+						}
+					}*/
+					/*Urvi - 06/06/2016 removed rollsroyce careers site code ---------------- end*/
+					
+					/*Urvi:16/05/2016 full width playlist end*/	
+					
+					//if(inv_playerContainer.width() < 640 && !inv_DBO_Detail.IsSmallMobile)/*////////////////////////////////Video Playlist on small mobile*/
+					//if(( $j(window).width() < 640 || inv_DBO_Detail.IsLargeMobile || (inv_DBO_Detail.IsSmallMobile && inv_playerContainer.attr('iscareerssite')=='true') ))
+					if(checkIsSmallDeviceOrMediumDevice())
+					{
+						//if(!inv_DBO_Detail.IsSmallMobile)
+						{
+							inv_playerContainer.find('.inv_videoListTitle').bind('click',function()
+							{
+								var imagCon=$j(this).closest(".inv_videoListThumbnail").find('.inv_videoListThumbnailimgContainer');
+								if(imagCon.length==1)
+								{
+									imagCon.trigger('click');
+									inv_playerContainer.find(".inv_videoGallery").hide();
+								}
+							});	
+						}				
+					}
+					
+					/*Urvi - 06/06/2016 removed rollsroyce careers site code ----------------*/
+					if(checkIsSmallDevice())
+					{
+						inv_playerContainer.find('.inv_videoListThumbnailimgContainer').unbind("click");
+						inv_playerContainer.find('.inv_videoListThumbnailimgContainer').bind("click",function()
+						{
+							inv_playerContainer.find(".inv_videoGallery").hide();
+							triggerVideoOnSmallDevice($j(this).find(".inv_videoListThumbnailOverimg").attr("refid"));
+						});
+					}
+				}
+				
+				if(isIE())
+				{
+					inv_playerContainer.addClass("isIE");
+				}
+				
+				inv_playerContainer.find('.inv_controlbigtext, .inv_nowplayingLabel, .inv_videoInformation, .inv_shareBtn, .videoListLabel, .videoListBtn, .inv_videoGallery, .inv_nowplayingContainer, .inv_videoListBtnContainer').addClass("inv_videoControls_extra");						
+				inv_playerContainer.find('.inv_videoListThumbnailimgContainer').unbind('touchstart');
+				
+				// Section text for control bar title //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+				if(op.sectionText)
+				{
+					inv_playerContainer.find(".inv_controlbigtext").html(op.sectionText);
+					inv_playerContainer.find(".galleryTitle").html(op.sectionText);
+				}
+				
+				// Gallery type labels //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+				inv_playerContainer.find(".inv_nowplayingLabel, .nowplayLabel").text("now playing");
+				inv_playerContainer.find(".nextplayLabel").text("up next");
+				inv_playerContainer.find(".morevideosLabel").text("more videos");
+				inv_playerContainer.find(".videoListLabel").text("video list");
+				
+				// Hide gallery initially //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+				inv_playerContainer.find(".inv_videoGallery").hide();
+				
+				// List Button Click  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+				inv_playerContainer.find(".videoListBtn").bind("click", function()
+				{
+					if(inv_playerContainer.find(".videoListBtn").hasClass("list-active"))
+					{
+						inv_playerContainer.find(".videoListBtn").removeClass("list-active");
+						inv_playerContainer.removeClass("galleryActive");
+						inv_playerContainer.find(".inv_videoGallery").slideUp("fast");
+					}
+					else
+					{
+						inv_playerContainer.find(".inv_infoBtnNew.active").trigger("click");
+						inv_playerContainer.find('.inv_shareBtn.inv_shareBtnClick').trigger("click");
+							
+						inv_playerContainer.find(".videoListBtn").addClass("list-active");
+						inv_playerContainer.addClass("galleryActive");
+						inv_playerContainer.find(".inv_videoGallery").slideDown("fast");
+					}
+				});
+				
+				// Sharing Options //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+				/*Urvi - 06/06/2016 removed rollsroyce careers site code ----------------*/
+				//if(inv_DBO_Detail.IsSmallMobile)// || inv_playerContainer.attr('testcareers')=='true')
+				{
+					inv_playerContainer.find(".inv_shareBtn").unbind("click");
+					inv_playerContainer.find(".inv_shareBtn").bind("click",function()
+					{
+						if(inv_playerContainer.find(".inv_shareBtn").attr('class').indexOf('inv_shareBtnClick')!=-1)
+						{
+							inv_playerContainer.find(".inv_shareControls").fadeOut('fast', function() 
+							{
+								inv_playerContainer.find(".inv_shareBtn").removeClass("inv_shareBtnClick");
+							});	
+						}
+						else
+						{
+							inv_playerContainer.find(".inv_shareControls").fadeIn('fast', function() 
+							{
+								inv_playerContainer.find(".inv_shareBtn").addClass("inv_shareBtnClick");
+							});
+						}
+					});
+				}
+				inv_playerContainer.find(".inv_facebookBtn").unbind("click");
+				inv_playerContainer.find(".inv_facebookBtn").bind("click", function()
+				{
+					trackGA("Facebook");
+					callFBshare(inv_videoShareTitle,"",window.location.href.toString());
+				});
+				inv_playerContainer.find(".inv_linkedinBtn").unbind("click");
+				inv_playerContainer.find(".inv_linkedinBtn").bind("click", function()
+				{
+					trackGA("Linkedin");
+					var querystring_test=window.parent.location;
+					var remove_string=querystring_test.toString().substring(querystring_test.toString().indexOf('?'),querystring_test.toString().indexOf('#'))
+				
+					querystring_test=querystring_test.toString().replace(remove_string,'');
+					//querystring_test=querystring_test.toString().replace('#','?videoid=');
+					querystring_test=encodeURIComponent(remove_string+querystring_test);
+					
+					window.open("http://www.linkedin.com/shareArticle?mini=false&url=" + querystring_test + "&title=" + inv_videoShareTitle + "&summary= ");
+				});
+				inv_playerContainer.find(".inv_twitterBtn").unbind("click");
+				inv_playerContainer.find(".inv_twitterBtn").bind("click", function()
+				{
+					trackGA("Twitter");
+					window.open("https://twitter.com/share?url=" + encodeURIComponent(window.location.href) + "&text=" + inv_videoShareTitle + ": ");
+				});	
+				/*if(inv_playerContainer.attr('testcareers')=='true' && (inv_DBO_Detail.IsSmallMobile || inv_DBO_Detail.IsLargeMobile))
+				{
+					if(inv_playerContainer.find(".inv_whatsappBtn").length==0)
+					{
+						$j("<div class='inv_whatsappBtn'></div>").insertAfter(inv_playerContainer.find(".inv_linkedinBtn"));	
+					}
+					inv_playerContainer.find(".inv_whatsappBtn").unbind("click");
+					inv_playerContainer.find(".inv_whatsappBtn").bind("click", function()
+					{
+						trackGA("Whatsapp");
+						window.open("whatsapp://send?text=" + inv_videoShareTitle + ": " + encodeURIComponent(window.location.href));
+					});	
+				}*/
+				/*inv_playerContainer.find(".inv_youtubeBtn").bind("click", function(){
+					window.open("https://www.youtube.com/user/RollsRoyceplc", "_blank");
+				});
+				
+				inv_playerContainer.find(".inv_vineBtn").bind("click", function(){
+					window.open("https://vine.co/", "_blank");
+				});*/
+							
+				// Information Button //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+				if(op.showInfo)
+				{
+					inv_playerContainer.find('.videoListLabel').html('<div class="inv_infoBtnNew"></div>');
+					
+					inv_playerContainer.find('.inv_videoListBtnContainer').append('<div class="inv_infoBtnNewDetail"></div>');
+					inv_playerContainer.find('.inv_infoBtnNewDetail').append('<div class="inv_infoBtnNewDetail_NowPlaing">NOW PLAYING</div>');
+					inv_playerContainer.find('.inv_infoBtnNewDetail').append('<div class="inv_infoBtnNewDetail_CloseBtn"></div>');
+					inv_playerContainer.find('.inv_infoBtnNewDetail').append('<div class="inv_infoBtnNewDetail_Title"></div>');
+					inv_playerContainer.find('.inv_infoBtnNewDetail').append('<div class="inv_infoBtnNewDetail_Description"></div>');
+					
+					inv_playerContainer.find('.inv_infoBtnNew').bind('touchstart click',function(e)
+					{
+						e.preventDefault();
+						e.stopPropagation();
+						if(inv_playerContainer.find(".inv_infoBtnNew").hasClass("active"))
+						{
+							inv_playerContainer.find(".inv_infoBtnNew").removeClass("active");
+							inv_playerContainer.find(".inv_infoBtnNewDetail").slideUp("fast");
+							//inv_playerContainer.find(".inv_playPauseBtn.inv_playBtn").trigger("click");
+						}
+						else
+						{
+							inv_playerContainer.find(".inv_infoBtnNew").addClass("active");
+							inv_playerContainer.find(".inv_infoBtnNewDetail").slideDown("fast");
+							
+							inv_playerContainer.find(".videoListBtn.list-active").trigger("click");
+							inv_playerContainer.find('.inv_shareBtn.inv_shareBtnClick').trigger("click");
+							//inv_playerContainer.find(".inv_playPauseBtn.inv_pauseBtn").trigger("click");
+						}
+					});
+					
+					inv_playerContainer.find('.inv_infoBtnNewDetail_CloseBtn').bind('touchstart click',function(e)
+					{
+						e.preventDefault();
+						e.stopPropagation();
+						inv_playerContainer.find('.inv_infoBtnNew.active').trigger("click");
+					});
+				}
+				setTimeout(function()
+				{
+					createCareersPageLayout();
+					//changeLayoutControlbar();
+				}, 0);//500
+				
+			}
+			else if(op.showInfo==false)
+			{
+				inv_playerContainer.find(".inv_videoInformation").addClass("banner");
+			}
+		}
+		
+		this.dataLoaded=function(data)
+		{
+			videoCollection = data;
+		}
+		
+		/*Urvi:16/05/2016 full width playlist start*/	
+		this.videoLoaded=function()
+		{
+			/****************************************************************** RR Careers Start ******************************************************************/	
+			if(op.rrcareers)
+			{
+				if(checkIsSmallDevice() && op.playerType.toLowerCase()=="galleryplayer")
+				{
+					triggerVideoOnSmallDevice(op.videoId);	
+				}
+				else
+				{
+					inv_playerContainer.data("videoId", inv_playerContainer.find(".inv_videoArea").attr("referenceid"));
+
+					inv_playerContainer.trigger("videoLoaded");
+					createCareersPageLayout("changevideo");
+					//changeLayoutControlbar("changevideo");				
+				}
+				/*Urvi - 06/06/2016 removed rollsroyce careers site code ---------------- start*/
+				/*if(inv_playerContainer.attr('testcareers')=='true' && op.playerType.toLowerCase()!="singleplayer")
+					inv_playerContainer.attr('playerMode','paused');*/
+				/*Urvi - 06/06/2016 removed rollsroyce careers site code ---------------- end*/
+			}
+			/****************************************************************** RR Careers End ******************************************************************/	
+			/****************************************************************** Banner Player Start ******************************************************************/
+			if(op.isLoop) // Banner player with loop - vine
+			{
+				 if(navigator.userAgent.match(/Lumia 930/)){
+					if(op.playerType=='singleplayer'){
+						inv_playerContainer.find(".inv_overlayPlay").unbind('click');
+						inv_playerContainer.find(".inv_overlayPlay").bind('click',function(){
+							window.open(videoCollection[0]["videoURL"]);
+						});
+					}
+				}
+			}
+			/****************************************************************** Banner Player End ******************************************************************/
+		}
+		
+		this.mediaComplete = function()
+		{
+			if(op.isLoop && inv_DBO_Detail.IsDesktop && !(inv_DBO_Detail.IsTouchDevice || navigator.userAgent.match(/Lumia 930/))) // Banner player with loop - vine
+			{
+				inv_playerContainer.find(".inv_overlayPlay").trigger('click');
+			}
+			/*Urvi - 06/06/2016 removed rollsroyce careers site code ---------------- start*/
+			/*if(inv_playerContainer.attr('testcareers')=='true' && op.playerType.toLowerCase()!="singleplayer")
+				inv_playerContainer.attr('playerMode','paused');*/
+			/*Urvi - 06/06/2016 removed rollsroyce careers site code ---------------- end*/
+		}
+		
+		this.playModeChanged = function(mode)
+		{
+			/*Urvi - 06/06/2016 removed rollsroyce careers site code ---------------- start*/
+			/*if(inv_playerContainer.attr('testcareers')=='true' && op.playerType.toLowerCase()!="singleplayer")
+			{
+				if(mode=='playing')
+					inv_playerContainer.attr('playerMode','playing');
+				if(inv_DBO_Detail.IsDesktop)
+				{
+					if(mode=='playing' && inv_playerContainer.find(".inv_fullscreenBtn").attr('class').indexOf('inv_normalmodeBtn')==-1)
+						inv_playerContainer.find(".inv_pauseBtn").trigger('click');
+				}
+			}*/
+			/*Urvi - 06/06/2016 removed rollsroyce careers site code ---------------- end*/
+		}
+		/*Urvi:16/05/2016 full width playlist end*/	
+		
+		this.videoResized=function()
+		{
+			resizeTranscript();
+			/****************************************************************** RR Careers Start ******************************************************************/	
+			if(op.rrcareers)
+			{
+				/*Urvi - 06/06/2016 removed rollsroyce careers site code ---------------- start*/
+				/*if(inv_playerContainer.attr('testcareers')=='true')
+				{
+					inv_playerContainer.find(".videoListBtn.list-active").trigger("click");
+				}				
+				if(inv_playerContainer.attr('testcareers')=='true' && op.playerType.toLowerCase()!="singleplayer")
+				{
+					if(inv_DBO_Detail.IsDesktop)
+					{
+						if(inv_playerContainer.find(".inv_fullscreenBtn").attr('class').indexOf('inv_normalmodeBtn')==-1)
+						{
+							inv_playerContainer.find(".inv_pauseBtn").trigger('click');
+						}
+					}
+				}*/
+				/*Urvi - 06/06/2016 removed rollsroyce careers site code ---------------- start*/
+				
+				/*Urvi:16/05/2016 full width playlist end*/	
+				
+				createCareersPageLayout("resize");
+				//changeLayoutControlbar("resize");
+			}
+			/****************************************************************** RR Careers End ******************************************************************/	
+			
+			
+			
+			var normalwidth;
+			var normalheight;
+			if(op.integrationMethod=="lightbox")
+			{
+				if(inv_playerContainer.find(".inv_fullscreenBtn").length>0 && inv_playerContainer.find(".inv_fullscreenBtn").attr('class').indexOf('inv_normalmodeBtn')!=-1)
+				{
+					var inv_videoPlayerWidth_Max=inv_DBO_Detail.WindowWidth;
+					var inv_videoPlayerHeight_Max=inv_DBO_Detail.WindowHeight;
+					
+					normalwidth=$j('#colorbox').width();					
+					normalheight=$j('#colorbox').height();
+
+					$j.colorbox.resize({innerWidth:inv_videoPlayerWidth_Max,innerHeight:inv_videoPlayerHeight_Max,scrolling:false,escKey:false,arrowKey:false});
+				}
+				else
+				{
+					/*normalwidth=inv_playerContainer.find(".inv_videoArea").width();
+					normalheight=(normalwidth/16)*9;*/
+					$j.colorbox.resize({innerWidth:normalwidth,innerHeight:normalheight,scrolling:false,escKey:false,arrowKey:false});
+				}
+			}
+			if(op.integrationMethod=="iframe")
+				$j(window.frameElement).height(inv_playerContainer.height());
+		}	
+		this.pauseVideo = function()
+		{
+			try
+			{
+				if(inv_playerContainer.find('.inv_overlayPlay').hasClass('inv_overlayPlayClicked'))	
+					inv_playerContainer.find('.inv_overlayPlay').trigger('click');
+			}
+			catch(e)
+			{
+			}
+		}
+		this.stopVideo = function()
+		{
+			try
+			{
+				inv_playerContainer.find('.inv_stopBtn').trigger('click');
+			}
+			catch(e)
+			{
+			}
+		}				
+		preinit();
+	}
+	$j.fn.pauseVideo = function ()
+	{
+		var me = $j(this);
+		var dataname='embedCode';
+		var instance = me.data(dataname);
+		if(instance!=undefined)
+		{
+			instance.pauseVideo();
+			return;
+		}
+	}
+	$j.fn.stopVideo = function ()
+	{
+		var me = $j(this);
+		var dataname='embedCode';
+		var instance = me.data(dataname);
+		if(instance!=undefined)
+		{
+			instance.stopVideo();
+			return;
+		}
+	}
+	$j.fn.embedCode = function (params) // namespace - Plugin Startup
+	{
+		var me = $j(this);
+		var dataname='embedCode';
+		var instance = me.data(dataname);
+		var create_new_instance=true;
+		var careers;
+		
+		try
+		{
+			// enable revised gallery design code with querystring
+			/* var vars = {};
+			var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+				vars[key] = value;
+			});			
+			careers = vars["testcareers"];
+			if(careers!=undefined && careers.indexOf("true")!=-1)
+				careers=true; */
+			
+			// enable revised gallery design code on live site
+			if((params.rrcareers==true && params.isCareersSite!=true))
+				careers=true;
+		}
+		catch(e)
+		{
+			
+		}		
+		if((careers && params.playerType=="galleryplayer") || me.data('rrCareers')!=undefined)
+		{
+			var dataname='rrCareers';
+			var instance = me.data(dataname);
+			if(instance!=undefined)
+			{
+				me.rrCareers(params);
+			}
+			else 
+			{
+				$j.ajax({
+					url: "https://viz.tools.investis.com/rollsroyce/html5player/live/careers-merged/javascripts/jquery.rrCareers.js",
+					crossDomain: true,
+					dataType: "script",
+					success: function () 
+					{
+						me.rrCareers(params);
+					},
+					error: function () {
+						// handle errors
+					}
+				});
+			}
+		}
+		else
+		{
+			if(instance!=undefined)
+			{
+				if(params.playerLoaded)
+				{
+					instance.playerLoaded();
+					return;
+				}
+				else if(params.videoLoaded)
+				{
+					instance.videoLoaded();
+					return;
+				}
+				else if(params.videoResized)
+				{
+					instance.videoResized();
+					return;
+				}			
+				else if(params.playModeChanged)
+				{
+					instance.playModeChanged(params.mode);
+					return;	
+				}
+				else if(params.mediaComplete)
+				{
+					instance.mediaComplete();
+					return;	
+				}
+				else if(params.dataLoaded)
+				{
+					instance.dataLoaded(params.videoData);
+					return;	
+				}
+				else if(params.trigger)
+				{
+					instance.triggerVideo(params.ref);
+					return;
+				}			
+				else
+				{
+					me.removeData(dataname);
+				}
+			}
+			else if (typeof params === 'object' || !params)
+			{
+				return me.data(dataname,  new playerConstruct(me, params));	
+			}	
+			
+		}
+	};
+})($j);//jQuery maped to the $, so it can't be overwritten by another library in the scope of its execution

@@ -1,0 +1,74 @@
+/*
+    Colorbox Core Style:
+    The following CSS is consistent between example themes and should not be altered.
+*/
+#colorbox, #cboxOverlay, #cboxWrapper{position:absolute; top:0; left:0; z-index:999999; overflow:visible !important;}
+#cboxWrapper {max-width:none;}
+#cboxOverlay{position:fixed; width:100%; height:100%;}
+#cboxMiddleLeft, #cboxBottomLeft{clear:left;}
+#cboxContent{position:relative;background:#333;}
+#cboxLoadedContent{overflow:auto; -webkit-overflow-scrolling: touch; background:#fff; border:20px solid #333;}
+
+@media all and (max-width:600px) {
+#cboxLoadedContent{border:10px solid #333;}
+}
+
+#cboxTitle{margin:0;}
+#cboxLoadingOverlay, #cboxLoadingGraphic{position:absolute; top:0; left:0; width:100%; height:100%;}
+#cboxPrevious, #cboxNext, #cboxClose, #cboxSlideshow{cursor:pointer;}
+.cboxPhoto{float:left; margin:auto; border:0; display:block; max-width:none; -ms-interpolation-mode:bicubic;}
+.cboxIframe{width:100%; height:100%; display:block; border:0; padding:0; margin:0;}
+#colorbox, #cboxContent, #cboxLoadedContent{box-sizing:content-box !important; -moz-box-sizing:content-box !important; -webkit-box-sizing:content-box !important;}
+
+
+/* 
+    User Style:
+
+    ordered & tabbed in a way that represents the nesting of the generated HTML.
+*/
+#cboxOverlay{background:url(/~/media/Images/R/Rolls-Royce/css/overlay.png) repeat 0 0;}
+#colorbox{outline:0;}
+  /*  #cboxTopLeft{width:21px; height:21px; background:#000;}
+    #cboxTopRight{width:21px; height:21px; background:#000;}
+    #cboxBottomLeft{width:21px; height:21px; background:#000;}
+    #cboxBottomRight{width:21px; height:21px; background:#000;}
+    #cboxMiddleLeft{width:21px; background:#000;;}
+    #cboxMiddleRight{width:21px; background:#000;}
+    #cboxTopCenter{height:21px; background:#000;}
+    #cboxBottomCenter{height:21px; background:#000;}*/
+    #cboxContent{background:#333; }
+        #cboxError{padding:50px; border:1px solid #ccc;}
+       /* #cboxLoadedContent{margin-bottom:28px;}*/
+        #cboxTitle{position:absolute; bottom:0px; left:0; text-align:center; width:100%; color:#949494;}
+        #cboxCurrent{position:absolute; bottom:0px; left:58px; color:#949494;}
+        #cboxLoadingOverlay{background:#000;}
+        #cboxLoadingGraphic{background:#000;}
+
+        /* these elements are buttons, and may need to have additional styles reset to avoid unwanted base styles */
+        #cboxPrevious, #cboxNext, #cboxSlideshow, #cboxClose {border:0; padding:0; margin:0; overflow:visible; width:auto; background:none; }
+        
+        /* avoid outlines on :active (mouseclick), but preserve outlines on :focus (tabbed navigating) */
+        #cboxPrevious:active, #cboxNext:active, #cboxSlideshow:active, #cboxClose:active {outline:0;}
+
+        #cboxSlideshow{position:absolute; bottom:4px; right:30px; color:#0092ef;}
+        #cboxPrevious{position:absolute; top:45%; left:0; background: url(/~/media/Images/R/Rolls-Royce/css/carousel-arrows-tcm92-55446) no-repeat left center #f2f2f2;width: 30px;height: 40px;text-indent: -9999px;opacity: 0.9;-webkit-transition: all 0.25s ease;-moz-transition: all 0.25s ease;-ms-transition: all 0.25s ease;-o-transition: all 0.25s ease;transition: all 0.25s ease;}
+        #cboxNext{position: absolute;top: 45%;right: 0;background: url(/~/media/Images/R/Rolls-Royce/css/carousel-arrows-tcm92-55446) no-repeat right center #f2f2f2;width: 30px;height: 40px;text-indent: -9999px;opacity: 0.9;-webkit-transition: all 0.25s ease;-moz-transition: all 0.25s ease;-ms-transition: all 0.25s ease;-o-transition: all 0.25s ease;transition: all 0.25s ease;}
+        #cboxNext:hover, #cboxPrevious:hover{opacity: 1;-webkit-transform: scale(1.25);-moz-transform: scale(1.25);-ms-transform: scale(1.25);-o-transform: scale(1.25);transform: scale(1.25);}
+        #cboxClose{position:absolute; top:-40px; right:0px; background:url(/~/media/Images/R/Rolls-Royce/css/close-icon.png) no-repeat center #333; width:40px; height:40px; text-indent:-9999px; z-index:9999;}
+        #cboxClose:hover{}
+
+/*
+  The following fixes a problem where IE7 and IE8 replace a PNG's alpha transparency with a black fill
+  when an alpha filter (opacity change) is set on the element or ancestor element.  This style is not applied to or needed in IE9.
+  See: http://jacklmoore.com/notes/ie-transparency-problems/
+*/
+.cboxIE #cboxTopLeft,
+.cboxIE #cboxTopCenter,
+.cboxIE #cboxTopRight,
+.cboxIE #cboxBottomLeft,
+.cboxIE #cboxBottomCenter,
+.cboxIE #cboxBottomRight,
+.cboxIE #cboxMiddleLeft,
+.cboxIE #cboxMiddleRight {
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#00FFFFFF,endColorstr=#00FFFFFF);
+}
